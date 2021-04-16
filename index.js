@@ -229,3 +229,150 @@ bot.on("message", message => {
         id_canale.send(embed);
         }
 });
+
+//Messaggio di benvenuto
+bot.on("guildMemberAdd", (member) => {
+    //console.log(member.guild); Per avere tutte le info del server
+
+    var embedwelcome = new Discord.MessageEmbed()
+        .setColor("#008f39")
+        .setTitle("**Benvenuto!**")
+        .setDescription("Benvenuto " + member.toString() + "in The Casalegno Community! Leggi prima di tutto le regole in <#823490923878678528>")
+        .setThumbnail("https://cdn.mee6.xyz/guild-images/823488617887563796/5ce66474948dd3476275b15babc0f70959645d5ce61d307087377481eb8f00ba.png")
+        .addField("**Membro**", member.guild.memberCount, false)
+        .setTimestamp();
+
+    bot.channels.cache.get("823489809627611148").send(embedwelcome);
+})
+//Messaggio di Addio
+bot.on("guildMemberRemove", (member) => {
+
+    var embedwelcome = new Discord.MessageEmbed()
+        .setColor("#008f39")
+        .setTitle("**Addio...**")
+        .setDescription("Addio " + member.toString() + "ci mancherai qui in The Casalegno Community! :thecasa_sad:")
+        .setThumbnail("https://iili.io/qmWGf4.png")
+        .setTimestamp();
+
+    bot.channels.cache.get("823489809627611148").send(embedwelcome);
+    bot.channels.cache.get("793781905740922900").send("Ciao ciao" + member.toString() + ", torna presto!");
+})
+
+bot.on("message", message => {
+    if (message.content.startsWith("!userinfo")) {
+        if (message.content == "!userinfo") {
+            var utente = message.member;
+        }
+        else {
+            var utente = message.mentions.members.first();
+        }
+
+        if (!utente) {
+            message.channel.send("Non ho trovato questo utente")
+            return
+        }
+
+        var elencoPermessi = "";
+        if (utente.hasPermission("ADMINISTRATOR")) {
+            elencoPermessi = "👑 ADMINISTRATOR";
+        }
+        else {
+            var permessi = ["CREATE_INSTANT_INVITE", "KICK_MEMBERS", "BAN_MEMBERS", "MANAGE_CHANNELS", "MANAGE_GUILD", "ADD_REACTIONS", "VIEW_AUDIT_LOG", "PRIORITY_SPEAKER", "STREAM", "VIEW_CHANNEL", "SEND_MESSAGES", "SEND_TTS_MESSAGES", "MANAGE_MESSAGES", "EMBED_LINKS", "ATTACH_FILES", "READ_MESSAGE_HISTORY", "MENTION_EVERYONE", "USE_EXTERNAL_EMOJIS", "VIEW_GUILD_INSIGHTS", "CONNECT", "SPEAK", "MUTE_MEMBERS", "DEAFEN_MEMBERS", "MOVE_MEMBERS", "USE_VAD", "CHANGE_NICKNAME", "MANAGE_NICKNAMES", "MANAGE_ROLES", "MANAGE_WEBHOOKS", "MANAGE_EMOJIS"]
+
+            for (var i = 0; i < permessi.length; i++) {
+                if (utente.hasPermission(permessi[i])) {
+                    elencoPermessi += "- " + permessi[i] + "\r";
+                }
+            }
+        }
+
+        var embeduserinfo = new Discord.MessageEmbed()
+            .setTitle("Info su " + utente.user.tag)
+            .setDescription("Tutte le informazioni di questo utente")
+            .setThumbnail(utente.user.avatarURL())
+            .setColor("008f39")
+            .addField("User id", utente.user.id, true)
+            .addField("Stato", utente.user.presence.status, true)
+            .addField("È un bot?", utente.user.bot ? "Si" : "No", true)
+            .addField("Account creato", utente.user.createdAt.toDateString(), true)
+            .addField("Unito in questo server dal", utente.joinedAt.toDateString(), true)
+            .addField("Ruoli", utente.roles.cache.map(ruolo => ruolo.name).join("\r"), false)
+
+        message.channel.send(embeduserinfo)
+    }
+})
+
+bot.on("message", message => {
+    if (message.content.startsWith("!userpermissions")) {
+        if (message.content == "!userinfo") {
+            var utente = message.member;
+        }
+        else {
+            var utente = message.mentions.members.first();
+        }
+
+        if (!utente) {
+            message.channel.send("Non ho trovato questo utente")
+            return
+        }
+
+        var elencoPermessi = "";
+        if (utente.hasPermission("ADMINISTRATOR")) {
+            elencoPermessi = "👑 ADMINISTRATOR";
+        }
+        else {
+            var permessi = ["CREATE_INSTANT_INVITE", "KICK_MEMBERS", "BAN_MEMBERS", "MANAGE_CHANNELS", "MANAGE_GUILD", "ADD_REACTIONS", "VIEW_AUDIT_LOG", "PRIORITY_SPEAKER", "STREAM", "VIEW_CHANNEL", "SEND_MESSAGES", "SEND_TTS_MESSAGES", "MANAGE_MESSAGES", "EMBED_LINKS", "ATTACH_FILES", "READ_MESSAGE_HISTORY", "MENTION_EVERYONE", "USE_EXTERNAL_EMOJIS", "VIEW_GUILD_INSIGHTS", "CONNECT", "SPEAK", "MUTE_MEMBERS", "DEAFEN_MEMBERS", "MOVE_MEMBERS", "USE_VAD", "CHANGE_NICKNAME", "MANAGE_NICKNAMES", "MANAGE_ROLES", "MANAGE_WEBHOOKS", "MANAGE_EMOJIS"]
+
+            for (var i = 0; i < permessi.length; i++) {
+                if (utente.hasPermission(permessi[i])) {
+                    elencoPermessi += "- " + permessi[i] + "\r";
+                }
+            }
+        }
+
+        var embeduserpermission = new Discord.MessageEmbed()
+            .setTitle("I permessi di " + utente.user.tag)
+            .setDescription("Tutti i permessi di questo utente")
+            .setThumbnail(utente.user.avatarURL())
+            .setColor("008f39")
+            .addField("User id", utente.user.id, true)
+            .addField("Permessi:", elencoPermessi, false)
+
+        message.channel.send(embeduserpermission)
+    }
+})
+
+bot.on("message", message => {
+    if (message.content.startsWith("!avatar")) {
+        if (message.content.trim() == "!avatar") {
+            var utente = message.member;
+        }
+        else {
+            var utente = message.mentions.members.first();
+        }
+
+        if (!utente) {
+            message.channel.send("Utente non trovato")
+        }
+
+        var embedavatar = new Discord.MessageEmbed()
+            .setTitle(utente.user.tag)
+            .setDescription("L'avatar di questo utente")
+            .setImage(utente.user.displayAvatarURL({
+                dynamic: true,
+                format: "png",
+                size: 512
+            }))
+
+        message.channel.send(embedavatar)
+    }
+})
+
+bot.on("guildMemberAdd", member => { //Update canale quando entra un utente dal server
+    var canale = client.channels.cache.get(827987843082879037)
+    canale.setName("👾│membri: " + member.guild.memberCount)
+});
+bot.on("guildMemberRemove", member => { //Update canale quando esce un utente dal server
+    var canale = client.channels.cache.get(827987843082879037)
+    canale.setName("👾│membri: " + member.guild.memberCount)
+});
