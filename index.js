@@ -9,7 +9,7 @@ var con = mysql.createPool({
     host: "eu-cdbr-west-01.cleardb.com",
     port: 3306,
     user: "bf61414d67764b",
-    password: "3e2c0091",
+    password: process.env.passwordData,
     database: "heroku_5ad199d815035e4",
 })
 
