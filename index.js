@@ -1,17 +1,21 @@
 const Discord = require("discord.js"); 
-const bot = new Discord.Client();
-const mysql = require("mysql")
+const bot = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 const Parser = require("expr-eval").Parser
+const mysql = require("mysql")
 
-bot.login(process.env.token);
+bot.login(proces.env.token);
 
 var con = mysql.createPool({
     host: "eu-cdbr-west-01.cleardb.com",
     port: 3306,
     user: "bf61414d67764b",
-    password: process.env.passwordData,
+    password: "3e2c0091",
     database: "heroku_5ad199d815035e4",
 })
+
+
+
+
 
 bot.on("message", (message) =>{
     if (message.content == "!time") {
@@ -254,19 +258,6 @@ bot.on("guildMemberAdd", (member) => {
 
     bot.channels.cache.get("823489809627611148").send(embedwelcome);
 })
-//Messaggio di Addio
-bot.on("guildMemberRemove", (member) => {
-
-    var embedwelcome = new Discord.MessageEmbed()
-        .setColor("#008f39")
-        .setTitle("**Addio...**")
-        .setDescription("Addio " + member.toString() + "ci mancherai qui in The Casalegno Community! :thecasa_sad:")
-        .setThumbnail("https://iili.io/qmWGf4.png")
-        .setTimestamp();
-
-    bot.channels.cache.get("823489809627611148").send(embedwelcome);
-    bot.channels.cache.get("793781905740922900").send("Ciao ciao" + member.toString() + ", torna presto!");
-})
 
 bot.on("message", message => {
     if (message.content.startsWith("!userinfo")) {
@@ -379,14 +370,155 @@ bot.on("message", message => {
 })
 
 bot.on("guildMemberAdd", member => { //Update canale quando entra un utente dal server
-    var canale = client.channels.cache.get(827987843082879037)
+    var canale = bot.channels.cache.get("838117609840574554")
     canale.setName("👾│membri: " + member.guild.memberCount)
 });
 bot.on("guildMemberRemove", member => { //Update canale quando esce un utente dal server
-    var canale = client.channels.cache.get(827987843082879037)
+    var canale = bot.channels.cache.get("838117609840574554")
     canale.setName("👾│membri: " + member.guild.memberCount)
 });
 
+
+bot.on("message", message => {
+    if(message.content == "!ticket") {
+    message.channel.send("Clicca sulla reazione per aprire un ticket e richiedere assistenza")
+    .then(msg => msg.react("📨"))
+};
+})
+
+bot.on("messageReactionAdd", async function (messageReaction, user) {
+    if (user.bot) return
+
+    if (messageReaction.message.partial) await messageReaction.message.fetch();
+
+    if (messageReaction._emoji.name == "📨") {
+        if (messageReaction.message.channel.id == "826010057387802664") {
+            messageReaction.users.remove(user);
+            var server = messageReaction.message.channel.guild;
+            if (server.channels.cache.find(canale => canale.topic == `User ID: ${user.id}`)) {
+                user.send("Hai gia un ticket aperto").catch(() => { })
+                return
+            }
+
+            server.channels.create(user.username + " help", {
+                type: "text"
+            }).then(canale => {
+                canale.setTopic(`User ID: ${user.id}`);
+                canale.setParent("825689164384436244")
+                canale.overwritePermissions([
+                    {
+                        id: server.id,
+                        deny: ["VIEW_CHANNEL"]
+                    },
+                    {
+                        id: user.id,
+                        allow: ["VIEW_CHANNEL"]
+                    }
+                ])
+                var embed = new Discord.MessageEmbed()
+                .setTitle("Grazie " + user.tag + " di aver aperto un ticket")
+                .setDescription("Attendi l'arrivo di un moderatore per comunicare il tuo problema")
+                .setColor("#008080") 
+
+                canale.send(embed)
+            })
+        }
+    }
+})
+
+bot.on("message", message => {
+    if (message.content == "!close") {
+        var topic = message.channel.topic;
+        if (!topic) {
+            message.channel.send("Non puoi utilizzare questo comando qui");
+            return
+        }
+
+        if (topic.startsWith("User ID:")) {
+            var idUtente = topic.slice(9);
+            if (message.author.id == idUtente || message.member.hasPermission("MANAGE_CHANNELS")) {
+                message.channel.delete();
+            }
+        }
+        else {
+            message.channel.send("Non puoi utilizzare questo comando qui")
+        }
+    }
+
+    if (message.content.startsWith("!add")) {
+        var topic = message.channel.topic;
+        if (!topic) {
+            message.channel.send("Non puoi utilizzare questo comando qui");
+            return
+        }
+
+        if (topic.startsWith("User ID:")) {
+            var idUtente = topic.slice(9);
+            if (message.author.id == idUtente || message.member.hasPermission("MANAGE_CHANNELS")) {
+                var utente = message.mentions.members.first();
+                if (!utente) {
+                    message.channel.send("Inserire un utente valido");
+                    return
+                }
+
+                var haIlPermesso = message.channel.permissionsFor(utente).has("VIEW_CHANNEL", true)
+
+                if (haIlPermesso) {
+                    message.channel.send("Questo utente ha gia accesso al ticket")
+                    return
+                }
+
+                message.channel.updateOverwrite(utente, {
+                    VIEW_CHANNEL: true
+                })
+
+                message.channel.send(`${utente.toString()} è stato aggiunto al ticket`)
+            }
+        }
+        else {
+            message.channel.send("Non puoi utilizzare questo comando qui")
+        }
+    }
+    if (message.content.startsWith("!remove")) {
+        var topic = message.channel.topic;
+        if (!topic) {
+            message.channel.send("Non puoi utilizzare questo comando qui");
+            return
+        }
+
+        if (topic.startsWith("User ID:")) {
+            var idUtente = topic.slice(9);
+            if (message.author.id == idUtente || message.member.hasPermission("MANAGE_CHANNELS")) {
+                var utente = message.mentions.members.first();
+                if (!utente) {
+                    message.channel.send("Inserire un utente valido");
+                    return
+                }
+
+                var haIlPermesso = message.channel.permissionsFor(utente).has("VIEW_CHANNEL", true)
+
+                if (!haIlPermesso) {
+                    message.channel.send("Questo utente non ha gia accesso al ticket")
+                    return
+                }
+
+                if (utente.hasPermission("MANAGE_CHANNELS")) {
+                    message.channel.send("Non puoi rimuovere questo utente")
+                    return
+                }
+
+                message.channel.updateOverwrite(utente, {
+                    VIEW_CHANNEL: false
+                })
+
+                message.channel.send(`${utente.toString()} è stato rimosso al ticket`)
+            }
+        }
+        else {
+            message.channel.send("Non puoi utilizzare questo comando qui")
+        }
+    }
+})
 
 var canaleCounting = "823493122314731570"
 bot.on("message", message => {
@@ -395,9 +527,7 @@ bot.on("message", message => {
                         console.log(err)
                         return
                 }
-
                 var server = result[0]
-
                 con.query("SELECT * FROM user", (err, result) => {
                         if (err) {
                                 console.log(err)

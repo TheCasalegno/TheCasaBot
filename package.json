@@ -1,5 +1,5 @@
 {
-  "name": "thecasabot",
+  "name": "thecasabot2",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^12.5.1"
+    "discord.js": "^12.5.3",
+    "expr-eval": "^2.0.2",
+    "mysql": "^2.18.1"
   }
 }
