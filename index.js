@@ -3,7 +3,7 @@ const bot = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
 const Parser = require("expr-eval").Parser
 const mysql = require("mysql")
 
-bot.login(proces.env.token);
+bot.login(process.env.token);
 
 var con = mysql.createPool({
     host: "eu-cdbr-west-01.cleardb.com",
