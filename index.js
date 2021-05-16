@@ -958,7 +958,7 @@ setInterval(function () {
                     tempmute[Object.keys(tempmute)[i]].time = tempmute[Object.keys(tempmute)[i]].time - 5;
 
                     if (tempmute[Object.keys(tempmute)[i]].time <= 0) {
-                            var server = client.guilds.cache.get("idServer") //<--- INSERIRE ID DEL SERVER
+                            var server = client.guilds.cache.get("823488617887563796") //<--- INSERIRE ID DEL SERVER
 
                             try {
                                     var utente = server.members.cache.find(x => x.id = Object.keys(tempmute)[i]);
@@ -978,7 +978,7 @@ setInterval(function () {
                     tempban[Object.keys(tempban)[i]].time = tempban[Object.keys(tempban)[i]].time - 5;
 
                     if (tempban[Object.keys(tempban)[i]].time <= 0) {
-                            var server = client.guilds.cache.get("idServer") //<--- INSERIRE ID DEL SERVER
+                            var server = client.guilds.cache.get("823488617887563796") //<--- INSERIRE ID DEL SERVER
 
                             server.members.unban(Object.keys(tempban)[i])
 
