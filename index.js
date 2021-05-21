@@ -7,13 +7,14 @@ const ms = require("ms")
 bot.login(process.env.token);
 
 var con = mysql.createPool({
-    host: "eu-cdbr-west-01.cleardb.com",
+    host: process.env.db_host,
     port: 3306,
-    user: "bcee427850505b",
-    password: "dff0769f",
-    database: "heroku_8aabe5088e5f6a7",
+    user: process.env.db_user,
+    password: process.env.db_password,
+    database: process.env.db_database,
 })
 
+client.user.setPresence({ activity: { name: "Bot Ufficiale - !help per aiuto", type: 'LISTENING'}})
 
 
 
@@ -959,7 +960,7 @@ setInterval(function () {
                     tempmute[Object.keys(tempmute)[i]].time = tempmute[Object.keys(tempmute)[i]].time - 5;
 
                     if (tempmute[Object.keys(tempmute)[i]].time <= 0) {
-                            var server = client.guilds.cache.get("823488617887563796") //<--- INSERIRE ID DEL SERVER
+                            var server = bot.guilds.cache.get("823488617887563796") //<--- INSERIRE ID DEL SERVER
 
                             try {
                                     var utente = server.members.cache.find(x => x.id = Object.keys(tempmute)[i]);
