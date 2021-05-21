@@ -14,7 +14,9 @@ var con = mysql.createPool({
     database: process.env.db_database,
 })
 
-bot.user.setPresence({ activity: { name: "Bot Ufficiale - !help per aiuto", type: 'LISTENING'}})
+bot.on("ready", () =>{
+    bot.user.setActivity("Bot Ufficiale - !help per aiuto", { type : "PLAYING" })
+})
 
 
 
