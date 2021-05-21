@@ -32,6 +32,14 @@ bot.on("message", (message) =>{
            
 });
 
+bot.on("message", (message) =>{
+    if (message.content == "!help") {
+        
+        message.channel.send("ORA ATTUALE :alarm_clock: : " + ora + ":" + minuto);
+            }
+           
+});
+
 
 bot.on("message", message => {
     if (message.content.startsWith("!ban")) {
@@ -53,7 +61,7 @@ bot.on("message", message => {
                 var embedban = new Discord.MessageEmbed()
         .setColor("#ff0000")
         .setTitle("**Utente Bannato dal Server**")
-        .setAuthor("Lo Sceriffo Bot")
+        .setAuthor("The Casa Bot")
         .setDescription("L'utente <@" + utenteKick + "> è stato bannato dal server.")
         .setThumbnail("https://iili.io/qugvxp.png")
         .addField("**Motivo**", reason, true)
@@ -100,7 +108,7 @@ bot.on("message", message => {
                 var embedban = new Discord.MessageEmbed()
         .setColor("#ff0000")
         .setTitle("**Utente Kicckato dal Server**")
-        .setAuthor("Lo Sceriffo")
+        .setAuthor("The Casa Bot")
         .setDescription("L'utente <@" + utenteKick + "> è stato kicckato dal server.")
         .setThumbnail("https://iili.io/qiijse.th.png")
         .addField("**Motivo**", reason, true)
@@ -130,6 +138,53 @@ bot.on("message", message => {
 });
 
 bot.on("message", message => {
+    if (message.content.startsWith("!mute")) {
+        var utenteKick = message.mentions.members.first();
+        var Mod = message.author
+        var args = message.content.split(/\s+/);
+            var reason = "";
+                if (args.length == 2) { //Se non viene inserito un motivo
+                    reason = "Nessun motivo";
+                }
+                else {
+                    for (var i = 2; i < args.length; i++) {
+                        reason += args[i] + " "
+                    }
+                }
+
+                var embedmute = new Discord.MessageEmbed()
+        .setColor("#ff0000")
+        .setTitle("**Utente Mutato**")
+        .setAuthor("The Casa Bot")
+        .setDescription("L'utente <@" + utenteKick + "> è stato mutato.")
+        .setThumbnail("https://iili.io/qiijse.th.png")
+        .addField("**Motivo**", reason, true)
+        .addField("**Moderatore**", Mod, true)
+        .setFooter("Gli utenti mutati non possono aggiungere reazioni, scrivere e parlare")
+        .setTimestamp();
+
+
+        if (!message.member.hasPermission('BAN_MEMBERS')) { //Controllare che l'utente abbia il permesso di bannare
+            message.channel.send('Non hai il permesso');
+            return;
+        }
+
+        if (!utenteKick) {
+            message.channel.send('Non hai menzionato nessun utente'); //Controllare che sia stato menzionato un utente
+            return;
+        }
+
+        if (!message.mentions.members.first().kickable) { //Controllare che il bot abbia il permesso di bannare
+            message.channel.send('Io non ho il permesso');
+            return
+        }
+
+        utenteKick.roles.add("826028996978278421")
+            .then(() => message.channel.send(embedmute))
+    }
+});
+
+bot.on("message", message => {
     if (message.content.startsWith("!warn")) {
         var utenteKick = message.mentions.members.first();
         var Mod = message.author
@@ -147,7 +202,7 @@ bot.on("message", message => {
                 var embedwarn = new Discord.MessageEmbed()
         .setColor("#ff0000")
         .setTitle("**Utente Avvisato (Warn)**")
-        .setAuthor("Lo Sceriffo")
+        .setAuthor("The Casa Bot")
         .setDescription("L'utente <@" + utenteKick + "> è stato Warnato")
         .setThumbnail("https://iili.io/qiiNqu.th.png")
         .addField("**Motivo**", reason, true)
