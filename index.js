@@ -32,15 +32,6 @@ bot.on("message", (message) =>{
            
 });
 
-bot.on("message", (message) =>{
-    if (message.content == "!help") {
-        
-        message.channel.send("ORA ATTUALE :alarm_clock: : " + ora + ":" + minuto);
-            }
-           
-});
-
-
 bot.on("message", message => {
     if (message.content.startsWith("!ban")) {
         var utenteKick = message.mentions.members.first();
@@ -1049,3 +1040,94 @@ setInterval(function () {
             con.query("UPDATE serverstats SET tempmute = '" + JSON.stringify(tempmute) + "', tempban = '" + JSON.stringify(tempban) + "'");
     })
 }, 5000)
+
+bot.on("message", message => {
+    if (message.content == "!serverinfo") {
+        var server = message.member.guild;
+
+        var botCount = server.members.cache.filter(member => member.user.bot).size;
+        var utentiCount = server.memberCount - botCount;
+
+        var categoryCount = server.channels.cache.filter(c => c.type == "category").size
+        var textCount = server.channels.cache.filter(c => c.type == "text").size
+        var voiceCount = server.channels.cache.filter(c => c.type == "voice").size
+
+        var embed = new Discord.MessageEmbed()
+            .setTitle(server.name)
+            .setDescription("Tutte le info su questo server")
+            .setThumbnail(server.iconURL())
+            .addField("Proprietario", server.owner.user.username, true)
+            .addField("Server id", server.id, true)
+            .addField("Regione server", server.region, true)
+            .addField("Membri", "Totali: " + server.memberCount + " - Utenti: " + utentiCount + " - Bots: " + botCount, false)
+            .addField("Canali", "Categorie: " + categoryCount + " - Testuali: " + textCount + " - Vocali: " + voiceCount, false)
+            .addField("Data di creazione", server.createdAt.toDateString() + "```", true)
+            .addField("Boost level", "Level " + server.premiumTier + " (Boost: " + server.premiumSubscriptionCount + ")`", true)
+
+        message.channel.send(embed)
+    }
+})
+
+bot.on("message", message => {
+    if (message.content.startsWith("!clear")) {
+        if (!message.member.hasPermission("MANAGE_MESSAGES")) { //Controllare che l'utente abbia il permesso di cancellare messaggi
+            message.channel.send('Non hai il permesso');
+            return;
+        }
+        if (!message.guild.me.hasPermission("MANAGE_MESSAGES")) { //Controllare che il bot abbia il permesso di cancellare messaggi
+            message.channel.send('Non ho il permesso');
+            return;
+        }
+
+        var count = message.content.slice(7); //Ottenere il numero inserito dall'utente
+        count = parseInt(count);
+
+        if (!count) {
+            message.channel.send("Inserisci un numero valido")
+            return
+        }
+
+        message.channel.bulkDelete(count, true)
+        message.channel.send(count + " messaggi eliminati").then(msg => {
+            msg.delete({ timeout: 1000 })
+        })
+
+    }
+})
+
+bot.on("message", message => {
+    if (message.content == "!help") {
+
+        var embedhelp = new Discord.MessageEmbed()
+            .setTitle("The Casa Bot Help")
+            .setDescription("Tutti i comandi di questo bot")
+            .setThumbnail(server.iconURL())
+            .addField("!time", "per ricevere l'orario", true)
+            .addField("!ban", "(mod only) bannare un utente", true)
+            .addField("!kick", "(mod only) kicckare un utente", true)
+            .addField("!warn", "(mod only) warnare un utente", true)
+            .addField("!mute, tempmute", "(mod only) mutare un utente", true)
+            .addField("!userinfo", "Info di un utente", true)
+            .addField("!serverinfo", "info del server", true)
+            .addField("!userpermissions", "info dei permessi di un utente", true)
+            .addField("!avatar", "l'avatar di un utente", true)
+            .addField("!cuser", "(counting) statustiche counting di un utente", true)
+            .addField("!invite", "l'invito del server. (verrà spedito in DM)", true)
+
+        message.channel.send(embedhelp)
+    }
+})
+
+bot.on("message", message => {
+    if (message.content == "!invite") {
+
+        var embedinvite = new Discord.MessageEmbed()
+            .setTitle("Invito al Server")
+            .setDescription("in DM ti è stato spedito il messaggio completo per le partnership")
+            .setThumbnail(server.iconURL())
+            .addField("Link invito:", "https://discord.gg/qMWbpksV3E", true)
+            
+        message.channel.send(embedinvite)
+        message.author.send("Messaggio privato :wave:  Heilà, come stai?\n\nTi scrivo per farti conoscere il mio server Discord, **The Casalegno Community**!\nUn server per chiacchierare, giocare ascoltare musica e conoscere nuove persone!\n\nCOSA OFFRIAMO?\n\n:speech_balloon: │Chat vocali e testuali per chiacchierare su tutto quello che vuoi!\n\n:space_invader: │Stanze per divertirsi con meme e giochi\n\n:robot: │Abbiamo *The Casa Bot* il bot **Ufficiale** della community\n\n:100: │Il famosissimo gioco del Counting\n\n:police_officer: │Staff sempre attivo e disponibile, con il nostro sistema di ticket\n\n:smiley: │Tantissime emoji personalizzate\n\n:closed_lock_with_key: │Stanze vocali private\n\n...E molte altre funzionalità bellissime! Unisciti (se ti va) per far espandere la community!!\n\n                    Clicca qui per unirti!\n**---> https://discord.gg/qMWbpksV3E <---**\n\nGrazie in anticipo,\n*Staff di The Casalegno Community*");
+    }
+})
