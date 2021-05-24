@@ -1054,6 +1054,7 @@ bot.on("message", message => {
 
         var embed = new Discord.MessageEmbed()
             .setTitle(server.name)
+            .setColor("fde910")
             .setDescription("Tutte le info su questo server")
             .setThumbnail(server.iconURL())
             .addField("Proprietario", server.owner.user.username, true)
@@ -1100,18 +1101,19 @@ bot.on("message", message => {
 
         var embedhelp = new Discord.MessageEmbed()
             .setTitle("The Casa Bot Help")
+            .setColor("fde910")
             .setDescription("Tutti i comandi di questo bot")
-            .addField("!time", "per ricevere l'orario", true)
-            .addField("!ban", "(mod only) bannare un utente", true)
-            .addField("!kick", "(mod only) kicckare un utente", true)
-            .addField("!warn", "(mod only) warnare un utente", true)
-            .addField("!mute, tempmute", "(mod only) mutare un utente", true)
-            .addField("!userinfo", "Info di un utente", true)
-            .addField("!serverinfo", "info del server", true)
-            .addField("!userpermissions", "info dei permessi di un utente", true)
-            .addField("!avatar", "l'avatar di un utente", true)
-            .addField("!cuser", "(counting) statustiche counting di un utente", true)
-            .addField("!invite", "l'invito del server. (verrà spedito in DM)", true)
+            .addField("`!time`", "per ricevere **l'orario**", true)
+            .addField("`!ban`", "*(mod only)* **bannare** un utente", true)
+            .addField("`!kick`", "*(mod only)* **kicckare** un utente", true)
+            .addField("`!warn`", "*(mod only)* **warnare** un utente", true)
+            .addField("`!mute`, tempmute", "*(mod only)* **mutare** un utente", true)
+            .addField("`!userinfo`", "Info di un **utente**", true)
+            .addField("`!serverinfo`", "info del **server**", true)
+            .addField("`!userpermissions`", "info dei **permessi** di un utente", true)
+            .addField("`!avatar`", "**l'avatar** di un utente", true)
+            .addField("`!cuser`", "*(counting)* **statistiche** counting di un utente", true)
+            .addField("`!invite`", "**l'invito** del server. *(verrà spedito in DM)*", true)
 
         message.channel.send(embedhelp)
     }
@@ -1122,6 +1124,7 @@ bot.on("message", message => {
 
         var embedinvite = new Discord.MessageEmbed()
             .setTitle("Invito al Server")
+            .setColor("fde910")
             .setDescription("in DM ti è stato spedito il messaggio completo per le partnership")
             .addField("Link invito:", "https://discord.gg/qMWbpksV3E", true)
             
