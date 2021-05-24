@@ -1101,7 +1101,6 @@ bot.on("message", message => {
         var embedhelp = new Discord.MessageEmbed()
             .setTitle("The Casa Bot Help")
             .setDescription("Tutti i comandi di questo bot")
-            .setThumbnail(server.iconURL())
             .addField("!time", "per ricevere l'orario", true)
             .addField("!ban", "(mod only) bannare un utente", true)
             .addField("!kick", "(mod only) kicckare un utente", true)
@@ -1124,7 +1123,6 @@ bot.on("message", message => {
         var embedinvite = new Discord.MessageEmbed()
             .setTitle("Invito al Server")
             .setDescription("in DM ti è stato spedito il messaggio completo per le partnership")
-            .setThumbnail(server.iconURL())
             .addField("Link invito:", "https://discord.gg/qMWbpksV3E", true)
             
         message.channel.send(embedinvite)
