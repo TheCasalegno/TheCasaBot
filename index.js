@@ -1,8 +1,10 @@
-const Discord = require("discord.js"); 
+const Discord = require("discord.js");
 const bot = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 const Parser = require("expr-eval").Parser
 const mysql = require("mysql")
 const ms = require("ms")
+const ytch = require('yt-channel-info');
+require('events').EventEmitter.prototype._maxListeners = 100;
 
 bot.login(process.env.token);
 
@@ -21,7 +23,7 @@ bot.on("ready", () =>{
 
 
 
-bot.on("message", (message) =>{
+bot .on("message", (message) =>{
     if (message.content == "!time") {
         var data = new Date();
         var ora = data.getHours();
@@ -29,7 +31,7 @@ bot.on("message", (message) =>{
 
         message.channel.send("ORA ATTUALE :alarm_clock: : " + ora + ":" + minuto);
             }
-           
+
 });
 
 bot.on("message", message => {
@@ -232,7 +234,7 @@ bot.on("message", message => {
         if (utenteKick.roles.cache.has("826028884092387369"));{ //Controllare che l'utente abbia il permesso di bannare
             utenteKick.roles.add("826028996978278421");
             message.channel.send(embedwarn);
-            
+
         }
 
         if (utenteKick.roles.cache.has("826028996978278421")) {
@@ -248,15 +250,15 @@ bot.on("message", message => {
         .setFooter("Il limite raggiungibile è di 2 warn")
         .setTimestamp();
 
-        
+
 
             utenteKick.ban()
             .then(() => message.channel.send(embedban))
             return;
 
         }
-        
-        
+
+
 
     }
 });
@@ -266,7 +268,7 @@ bot.on("message", message => {
         var args = message.content.split(/\s+/);
         var messaggio = "";
             if (args.length == 4) { //Se non viene inserito un motivo
-                messaggio = "Nessun mmessaggio";
+                messaggio = "Nessun messaggio";
             }
             else {
                 for (var i = 3; i < args.length; i++) {
@@ -297,7 +299,9 @@ bot.on("message", message => {
 //Messaggio di benvenuto
 bot.on("guildMemberAdd", (member) => {
     //console.log(member.guild); Per avere tutte le info del server
+    if (member.user.bot) return
 
+    member.roles.add("828291439992504370");
     var embedwelcome = new Discord.MessageEmbed()
         .setColor("#008f39")
         .setTitle("**Benvenuto!**")
@@ -468,7 +472,7 @@ bot.on("messageReactionAdd", async function (messageReaction, user) {
                 var embed = new Discord.MessageEmbed()
                 .setTitle("Grazie " + user.tag + " di aver aperto un ticket")
                 .setDescription("Attendi l'arrivo di un moderatore per comunicare il tuo problema")
-                .setColor("#008080") 
+                .setColor("#008080")
 
                 canale.send(embed)
             })
@@ -897,7 +901,7 @@ bot.on("message", message => {
                             canale.updateOverwrite(ruolo, {
                                     SEND_MESSAGES: false,
                                     ADD_REACTIONS: false,
-                                    SPEAK: false 
+                                    SPEAK: false
                             })
 
                     })
@@ -1127,8 +1131,234 @@ bot.on("message", message => {
             .setColor("fde910")
             .setDescription("in DM ti è stato spedito il messaggio completo per le partnership")
             .addField("Link invito:", "https://discord.gg/qMWbpksV3E", true)
-            
+
         message.channel.send(embedinvite)
         message.author.send("**Messaggio per Partnership**\n\n :wave:  Heilà, come stai?\n\nTi scrivo per farti conoscere il mio server Discord, **The Casalegno Community**!\nUn server per chiacchierare, giocare ascoltare musica e conoscere nuove persone!\n\nCOSA OFFRIAMO?\n\n:speech_balloon: │Chat vocali e testuali per chiacchierare su tutto quello che vuoi!\n\n:space_invader: │Stanze per divertirsi con meme e giochi\n\n:robot: │Abbiamo *The Casa Bot* il bot **Ufficiale** della community\n\n:100: │Il famosissimo gioco del Counting\n\n:police_officer: │Staff sempre attivo e disponibile, con il nostro sistema di ticket\n\n:smiley: │Tantissime emoji personalizzate\n\n:closed_lock_with_key: │Stanze vocali private\n\n...E molte altre funzionalità bellissime! Unisciti (se ti va) per far espandere la community!!\n\n                    Clicca qui per unirti!\n**---> https://discord.gg/qMWbpksV3E <---**\n\nGrazie in anticipo,\n*Staff di The Casalegno Community*");
+    }
+})
+
+bot.on("message", message => {
+    if (message.content == "!autorole1") {
+        var embed = new Discord.MessageEmbed() //Crea il tuo embed o messaggio normale
+            .setTitle("Ruoli categorie")
+            .setDescription("Clicca sulle reazioni per ottenere i ruoli per sbloccare le categorie")
+            .addField(":joystick: GAMER", "Sblocca la categoria games")
+            .addField("MUSIC", "Sblocca la categoria musica")
+            .addField("PROGRAMMATORE", "Sblocca la categoria di programmazione")
+
+        message.channel.send(embed)
+            .then(msg => {
+                //Inserire tutte le reazioni che si vogliono
+                msg.react("🕹️")
+                msg.react("🎧")
+                msg.react("💻")
+            })
+    }
+})
+//Quando viene cliccata una reazione
+bot.on("messageReactionAdd", async function (messageReaction, user) {
+    if (user.bot) return //Le reaction dei bot verranno escluse
+
+    if (messageReaction.message.partial) await messageReaction.message.fetch();
+
+    if (messageReaction.message.id == "idMessaggio") { //Settare id messaggio
+        if (messageReaction._emoji.name == "🕹️") {
+            var utente = messageReaction.message.guild.members.cache.find(x => x.id == user.id);
+            utente.roles.add("827988989825777701"); //Settare ruolo
+        }
+        if (messageReaction._emoji.name == "🎧") {
+            var utente = messageReaction.message.guild.members.cache.find(x => x.id == user.id);
+            utente.roles.add("827994135632805968");
+        }
+        if (messageReaction._emoji.name == "💻") {
+            var utente = messageReaction.message.guild.members.cache.find(x => x.id == user.id);
+            utente.roles.add("854352728649891850");
+        }
+    }
+})
+//Quando viene rimossa una reazione
+bot.on("messageReactionRemove", async function (messageReaction, user) {
+    if (user.bot) return
+
+    if (messageReaction.message.partial) await messageReaction.message.fetch();
+
+    if (messageReaction.message.id == "idMessaggio") {
+        if (messageReaction._emoji.name == "🕹️") {
+            var utente = messageReaction.message.guild.members.cache.find(x => x.id == user.id);
+            utente.roles.remove("827988989825777701");
+        }
+        if (messageReaction._emoji.name == "🎧") {
+            var utente = messageReaction.message.guild.members.cache.find(x => x.id == user.id);
+            utente.roles.remove("827994135632805968");
+        }
+        if (messageReaction._emoji.name == "💻") {
+            var utente = messageReaction.message.guild.members.cache.find(x => x.id == user.id);
+            utente.roles.remove("854352728649891850");
+        }
+    }
+})
+bot.on("message", message => {
+    if (message.content == "!lastvideo") {
+        const channelId = 'UCWGBuF0CWUa2vmBqLTJGuQA' //Settare id del tuo canale YouTube
+        const sortBy = 'newest'
+        ytch.getChannelVideos(channelId, sortBy).then((response) => {
+            var lastVideo = new Discord.MessageEmbed()
+                .setTitle(response.items[0].title)
+                .setURL("https://www.youtube.com/watch?v=" + response.items[0].videoId)
+                .setThumbnail(response.items[0].videoThumbnails[3].url)
+                .addField("Views", response.items[0].viewCount, true)
+                .addField("Durata", response.items[0].durationText, true)
+                .addField("Data di upload", response.items[0].publishedText, true)
+
+            message.channel.send(lastVideo)
+        })
+    }
+})
+
+bot.on("message", message => {
+    if (message.content.startsWith("!say")) {
+        var args = message.content.split(/s+/);
+        var testo;
+        testo = args.slice(1).join(" ");
+
+        if (!testo) {
+            message.channel.send("Inserire un messaggio");
+            return
+        }
+
+        message.delete()
+        message.channel.send(testo)
+    }
+})
+
+bot.on("message", message => {
+    if (message.content == "!pagine") {
+        var totalPage = 4; //Ricordati qui si settare le tue pagine totali
+        var page = 1;
+
+        //TUTTE LE PAGINE - Puoi crearne quante ne vuoi
+        var page1 = new Discord.MessageEmbed()
+            .setTitle("PAGINA 1")
+            .setDescription("Questa è la prima pagina")
+            .setFooter("Page 1/" + totalPage)
+
+        var page2 = new Discord.MessageEmbed()
+            .setTitle("PAGINA 2")
+            .setDescription("Questa è la seconda pagina")
+            .setFooter("Page 2/" + totalPage)
+
+        var page3 = new Discord.MessageEmbed()
+            .setTitle("PAGINA 3")
+            .setDescription("Questa è la terza pagina")
+            .setFooter("Page 3/" + totalPage)
+
+        var page4 = new Discord.MessageEmbed()
+            .setTitle("PAGINA 4")
+            .setDescription("Questa è la quarta pagina")
+            .setFooter("Page 4/" + totalPage)
+
+        message.channel.send(page1).then(msg => {
+            msg.react('◀').then(r => { //Puoi se vuoi personalizzare le emoji
+                msg.react('▶')
+
+                const reactIndietro = (reaction, user) => reaction.emoji.name === '◀' && user.id === message.author.id
+                const reactAvanti = (reaction, user) => reaction.emoji.name === '▶' && user.id === message.author.id
+
+                const paginaIndietro = msg.createReactionCollector(reactIndietro)
+                const paginaAvanti = msg.createReactionCollector(reactAvanti)
+
+                paginaIndietro.on('collect', (r, u) => { //Freccia indietro
+                    page--
+                    page < 1 ? page = totalPage : ""
+                    msg.edit(eval("page" + page))
+                    r.users.remove(r.users.cache.filter(u => u === message.author).first())
+                })
+                paginaAvanti.on('collect', (r, u) => { //Freccia avanti
+                    page++
+                    page > totalPage ? page = 1 : ""
+                    msg.edit(eval("page" + page))
+                    r.users.remove(r.users.cache.filter(u => u === message.author).first())
+                })
+            })
+        })
+    }
+})
+
+bot.on("message", message => {
+    if (message.content.startsWith("!channelinfo")) {
+        if (message.content == "!channelinfo") {
+            var canale = message.channel;
+        }
+        else {
+            var canale = message.mentions.channels.first();
+        }
+
+        if (!canale) {
+            message.channel.send("Canale non trovato");
+            return
+        }
+
+        switch (canale.type) {
+            case "text": canale.type = "Text"; break;
+            case "voice": canale.type = "Voice"; break;
+            case "news": canale.type = "News"; break;
+            case "category": canale.type = "Category"; break;
+        }
+
+        if (canale.type == "Voice") {
+            var embed = new Discord.MessageEmbed()
+                .setTitle(canale.name)
+                .setDescription("Tutte le statistiche su questo canale")
+                .addField("Channel ID", canale.id, true)
+                .addField("Type", canale.type, true)
+                .addField("Position", canale.rawPosition, true)
+                .addField("Category", canale.parent.name, true)
+                .addField("Bitrate", canale.bitrate, true)
+                .addField("User limit", canale.userLimit == 0 ? "∞" : canale.userLimit, true)
+            message.channel.send(embed)
+            return
+        }
+
+        if (canale.type == "Category") {
+            var embed = new Discord.MessageEmbed()
+                .setTitle(canale.name)
+                .setDescription("Tutte le statistiche su questa categoria")
+                .addField("Category ID", canale.id, true)
+                .addField("Type", canale.type, true)
+                .addField("Position", canale.rawPosition, true)
+                .addField("Category created", canale.createdAt.toDateString(), false)
+            message.channel.send(embed)
+            return
+        }
+
+        var lastMessage = canale.messages.fetch(canale.lastMessageID)
+            .then(lastMessage => {
+                var embed = new Discord.MessageEmbed()
+                    .setTitle(canale.name)
+                    .setDescription("Tutte le statistiche su questo canale")
+                    .addField("Channel ID", canale.id, true)
+                    .addField("Type", canale.type, true)
+                    .addField("Position", canale.rawPosition, true)
+                    .addField("Category", canale.parent.name, true)
+                    .addField("Topic", !canale.topic ? "No topic" : canale.topic, true)
+                    .addField("NSFW", canale.nsfw ? "Yes" : "No", true)
+                    .addField("Last message", lastMessage.author.username + "#" + lastMessage.author.discriminator + " - " + lastMessage.content, true)
+                    .addField("Channel created", canale.createdAt.toDateString(), false)
+                message.channel.send(embed)
+            })
+            .catch(() => {
+                var embed = new Discord.MessageEmbed()
+                    .setTitle(canale.name)
+                    .setDescription("Tutte le statistiche su questo canale")
+                    .addField("Channel ID", canale.id, true)
+                    .addField("Type", canale.type, true)
+                    .addField("Position", canale.rawPosition, true)
+                    .addField("Category", canale.parent.name, true)
+                    .addField("Topic", !canale.topic ? "No topic" : canale.topic, true)
+                    .addField("NSFW", canale.nsfw ? "Yes" : "No", true)
+                    .addField("Last message", "Not found", true)
+                    .addField("Channel created", canale.createdAt.toDateString(), false)
+                message.channel.send(embed)
+            });
     }
 })
